@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <header>
+    <nav aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero" aria-labelledby="hero-title">
+      <p>안녕하세요. Liver Server 테스트입니다. </p>
+      <h1 id="hero-title">포트폴리오입니다.</h1>
+      <p>HTML, CSS, JavaScript를 기반으로 의미 있는 웹 페이지를 만들어 가고 있습니다.</p>
+      <p>
+        <a href="#projects">Projects 보기</a>
+        <a href="#contact">Contact로 이동</a>
+      </p>
+    </section>
+
+    <section id="about" aria-labelledby="about-title">
+      <h2 id="about-title">About</h2>
+      <img src="images/profile.svg" alt="포트폴리오 작성자의 프로필 이미지">
+      <p>사용자에게 필요한 정보를 명확한 구조로 전달하는 웹 개발에 관심이 있습니다.</p>
+      <p>현재는 HTML의 의미 구조를 기반으로 CSS와 JavaScript를 단계적으로 학습하고 있습니다.</p>
+    </section>
+
+    <section id="skills" aria-labelledby="skills-title">
+      <h2 id="skills-title">Skills</h2>
+      <ul>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+      </ul>
+    </section>
+
+    <section id="projects" aria-labelledby="projects-title">
+      <h2 id="projects-title">Projects</h2>
+      <div class="project-list">
+        <article>
+          <h3>Portfolio Website</h3>
+          <p>개인 포트폴리오 웹사이트의 HTML 구조를 설계하는 프로젝트입니다.</p>
+          <p>사용 언어: HTML</p>
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer">저장소 링크</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Contact</h2>
+      <form action="#" method="post">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name">
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+        <div>
+          <label for="message">Message</label>
+          <textarea id="message" name="message"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Portfolio</p>
+    <p>
+      <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+</body>
+</html>
+

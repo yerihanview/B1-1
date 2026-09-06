@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">프로필 이미지</title>
+  <desc id="desc">사람 형태를 단순하게 표현한 임시 프로필 이미지</desc>
+  <rect width="240" height="240" fill="#eeeeee"/>
+  <circle cx="120" cy="88" r="44" fill="#cccccc"/>
+  <path d="M48 216c8-48 38-76 72-76s64 28 72 76" fill="#cccccc"/>
+</svg>
