@@ -61,11 +61,15 @@ document.body.appendChild(scrollToTopButton);
 // 1. 모바일 햄버거 메뉴 토글
 // ============================================
 const toggleMenu = () => {
+  if (!mainNav || !navToggle) {
+    console.warn('toggleMenu: mainNav or navToggle not found', { mainNav, navToggle });
+    return;
+  }
+
   mainNav.classList.toggle('active');
-  navToggle.setAttribute(
-    'aria-expanded',
-    navToggle.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'
-  );
+  const newState = navToggle.getAttribute('aria-expanded') === 'true' ? 'false' : 'true';
+  navToggle.setAttribute('aria-expanded', newState);
+  console.log('toggleMenu:', { active: mainNav.classList.contains('active'), ariaExpanded: newState });
 };
 
 navToggle.addEventListener('click', toggleMenu);
@@ -126,6 +130,135 @@ scrollToTopButton.addEventListener('click', scrollToTop);
 // 페이지 시작 시 theme 초기화
 // ============================================
 initTheme();
+
+// ============================================
+// v0.7 — GitHub API를 이용한 Projects 동적 렌더링
+// ============================================
+
+const projectsContainer = document.querySelector('#project-list');
+const projectsStatus = document.querySelector('#projects-status');
+
+// GitHub 사용자 이름을 설정하세요.
+// (예: const GITHUB_USERNAME = 'your-username')
+const GITHUB_USERNAME = 'yerihanview';
+
+const setProjectsStatus = (message, isError = false) => {
+  if (!projectsStatus) return;
+  projectsStatus.textContent = message;
+  projectsStatus.classList.toggle('is-error', Boolean(isError));
+};
+
+const renderLoading = () => {
+  setProjectsStatus('Loading projects...');
+  if (projectsContainer) projectsContainer.innerHTML = '';
+};
+
+const renderError = (message) => {
+  setProjectsStatus(message || 'Failed to load projects.', true);
+  if (!projectsContainer) return;
+  projectsContainer.innerHTML = '';
+
+  const retryBtn = document.createElement('button');
+  retryBtn.type = 'button';
+  retryBtn.textContent = 'Retry';
+  retryBtn.addEventListener('click', () => {
+    fetchAndRenderProjects();
+  });
+
+  projectsContainer.appendChild(retryBtn);
+};
+
+const renderEmpty = () => {
+  setProjectsStatus('No projects to display.');
+  if (projectsContainer) projectsContainer.innerHTML = '';
+};
+
+const createProjectCard = (repo) => {
+  const article = document.createElement('article');
+  article.className = 'project-card';
+
+  const title = document.createElement('h3');
+  title.textContent = repo.name || 'Untitled';
+
+  const desc = document.createElement('p');
+  desc.textContent = repo.description || '';
+
+  const lang = document.createElement('p');
+  lang.textContent = repo.language ? `사용 언어: ${repo.language}` : '';
+
+  const link = document.createElement('a');
+  link.href = repo.html_url;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.textContent = '저장소 링크';
+
+  article.appendChild(title);
+  if (desc.textContent) article.appendChild(desc);
+  if (lang.textContent) article.appendChild(lang);
+  article.appendChild(link);
+
+  return article;
+};
+
+const renderProjects = (repos) => {
+  setProjectsStatus('');
+  if (!projectsContainer) return;
+
+  if (!Array.isArray(repos) || repos.length === 0) {
+    renderEmpty();
+    return;
+  }
+
+  projectsContainer.innerHTML = '';
+  repos.forEach((repo) => {
+    const card = createProjectCard(repo);
+    projectsContainer.appendChild(card);
+  });
+};
+
+const fetchAndRenderProjects = async () => {
+  if (!GITHUB_USERNAME) {
+    renderError('GitHub username not configured.');
+    return;
+  }
+
+  const apiUrl = `https://api.github.com/users/${encodeURIComponent(GITHUB_USERNAME)}/repos`;
+
+  try {
+    renderLoading();
+
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      // rate limit(403) 등 HTTP 오류 처리
+      const statusText = `Error ${response.status}: ${response.statusText}`;
+      renderError(statusText);
+      return;
+    }
+
+    const data = await response.json();
+
+    // 필요한 최소 필드만 골라서 렌더링
+    const repos = data.map(({ name, description, language, html_url }) => ({
+      name,
+      description,
+      language,
+      html_url,
+    }));
+
+    renderProjects(repos);
+  } catch (err) {
+    renderError(err.message || 'Network error');
+  }
+};
+
+// 페이지 로드 후 자동 호출
+document.addEventListener('DOMContentLoaded', () => {
+  // Projects 섹션이 존재할 때만 호출
+  if (document.querySelector('#projects')) {
+    fetchAndRenderProjects();
+  }
+});
 
 // ============================================
 // v0.6 — Contact Form 유효성 검사

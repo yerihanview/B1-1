@@ -183,6 +183,7 @@ footer {
     border-top: 1px solid var(--color-border);
     padding: 1.5rem 1.5rem;
     box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+    z-index: 9999; /* ensure menu appears above other content */
   }
 
   .main-nav.active ul {
@@ -513,6 +514,11 @@ footer a:focus-visible {
 
   .nav-toggle {
     display: none;
+  }
+
+  /* ensure hamburger sits above the menu and other header content */
+  .nav-toggle {
+    z-index: 10000;
   }
 
   .theme-toggle {
