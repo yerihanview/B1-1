@@ -66,34 +66,73 @@ footer {
   margin: 0 auto;
 }
 
-header {
+.site-header {
   padding: 1.25rem 1.5rem;
 }
 
-/*
-- display: flex;는 nav ul 요소를 flex 컨테이너로 만들어 자식 요소들을 flex 아이템으로 배치합니다.
-- justify-content: center;는 flex 컨테이너의 주 축(main axis) 방향으로 아이템들을 중앙에 배치합니다.
-- gap: 1.5rem;은 flex 아이템들 사이에 1.5rem의 간격을 설정합니다.
-- list-style: none;은 리스트 아이템의 기본 스타일(점, 숫자 등)을 제거합니다.
-- margin: 0;과 padding: 0;은 리스트의 기본 여백과 패딩을 제거합니다.
-*/
-nav ul {
+.header-inner {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 56px;
+}
+
+.site-brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+}
+
+.main-nav {
+  display: none;
+}
+
+.main-nav ul {
+  display: flex;
+  align-items: center;
   gap: 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-nav a {
+.main-nav a,
+.site-brand,
+.theme-toggle,
+.nav-toggle {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.main-nav a {
   font-weight: 600;
   color: var(--color-text);
 }
 
-nav a:hover,
-nav a:focus-visible {
+.main-nav a:hover,
+.main-nav a:focus-visible {
   color: var(--color-primary);
+}
+
+.nav-toggle,
+.theme-toggle {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.nav-toggle {
+  margin-left: auto;
+}
+
+.theme-toggle {
+  display: none;
 }
 
 main {
@@ -114,13 +153,6 @@ section {
   color: var(--color-muted);
 }
 
-/*
-- clamp() 함수는 세 가지 값을 받아서, 첫 번째 값과 세 번째 값 사이에서 두 번째 값이 제한되도록 합니다.
-- font-size: clamp(2.5rem, 5vw, 4rem);
-  - 2.5rem: 최소 글꼴 크기
-  - 5vw: 뷰포트 너비의 5%를 기준으로 글꼴 크기를 조정
-  - 4rem: 최대 글꼴 크기
-*/
 #hero h1 {
   margin: 0 0 1rem;
   font-size: clamp(2.5rem, 5vw, 4rem);
@@ -128,28 +160,12 @@ section {
   letter-spacing: -0.04em;
 }
 
-/*
-- flex-wrap: wrap;은 flex 컨테이너의 아이템들이 한 줄에 다 들어가지 않을 경우, 다음 줄로 넘어가도록 설정합니다.
-- margin-top: 1.5rem;은 마지막 단락과 그 위의 요소 사이에 1.5rem의 여백을 추가합니다.
-*/
-
 #hero p:last-of-type {
   display: flex;
   flex-wrap: wrap;
   gap: 0.9rem;
   margin-top: 1.5rem;
 }
-
-/*
-- display: inline-block;은 요소를 인라인 블록으로 만들어, 텍스트와 함께 한 줄에 배치되면서도 블록 요소처럼 너비와 높이를 가질 수 있게 합니다.
-- padding: 0.8rem 1.25rem;은 요소의 내부 여백을 상하 0.8rem, 좌우 1.25rem로 설정합니다.
-- border-radius: 999px;은 요소의 모서리를 둥글게 만들어 완전히 원형에 가깝게 만듭니다.
-- border: 1px solid var(--color-border);은 요소에 1px 두께의 실선 테두리를 적용하고, 테두리 색상은 CSS 변수(--color-border)를 사용합니다.
-- font-weight: 700;은 글꼴의 두께를 굵게 설정합니다.
-- transition 속성은 요소의 상태 변화(예: hover, focus) 시 애니메이션 효과를 적용합니다.
-- transform: translateY(-1px);은 요소를 Y축 방향으로 -1px 이동시켜 살짝 들어올리는 효과를 줍니다.
-- box-shadow: 0 8px 18px rgba(52, 100, 232, 0.12);은 요소에 그림자 효과를 추가하여 입체감을 줍니다.
-*/
 
 .cta-link {
   display: inline-block;
@@ -208,7 +224,7 @@ h3 {
 
 #about {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 #about img {
@@ -220,9 +236,11 @@ h3 {
   box-shadow: var(--shadow-soft);
 }
 
-/*
-- display: grid;은 요소를 그리드 컨테이너로 만들어 자식 요소들을 그리드 아이템으로 배치합니다.
-*/
+.about-copy {
+  display: grid;
+  gap: 0.75rem;
+}
+
 #skills ul {
   margin: 0;
   padding-left: 1.25rem;
@@ -231,7 +249,9 @@ h3 {
 }
 
 .project-list {
-  display: block;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .project-card {
@@ -295,9 +315,6 @@ textarea {
   resize: vertical;
 }
 
-/*
-- cursor: pointer;는 마우스 커서가 버튼 위에 있을 때 손가락 포인터 모양으로 변경되도록 합니다.
-*/
 button {
   width: fit-content;
   padding: 0.8rem 1.5rem;
@@ -335,4 +352,68 @@ footer a {
 footer a:hover,
 footer a:focus-visible {
   color: #dfe7f4;
+}
+
+/*
+- @media 규칙은 미디어 쿼리를 사용하여 특정 조건에서만 CSS 스타일을 적용할 수 있도록 합니다.
+- min-width: 768px는 화면의 최소 너비가 768픽셀 이상일 때 적용되는 스타일을 정의합니다. 
+*/
+@media (min-width: 768px) {
+  .main-nav {
+    display: block;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .theme-toggle {
+    display: inline-flex; /* inline-flex는 요소를 인라인 블록처럼 배치하면서 내부 요소들을 flexbox로 정렬할 수 있게 합니다. */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-inner {
+    justify-content: flex-start;
+  }
+
+  .site-brand {
+    margin-right: auto;
+  }
+
+  .main-nav {
+    margin-right: auto;
+  }
+
+  #about {
+    grid-template-columns: 220px minmax(0, 1fr); /* grid-template-columns 속성은 그리드 컨테이너의 열 구조를 정의합니다. 여기서는 첫 번째 열은 220px 고정, 두 번째 열은 최소 0, 최대 가능한 공간을 차지하도록 설정 */
+    align-items: center;
+  }
+
+  #about h2 {
+    grid-column: 1 / -1;
+  }
+
+  #skills ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-header {
+    padding-top: 1.5rem;
+  }
+
+  #hero {
+    padding-top: 4rem;
+    padding-bottom: 4.5rem;
+  }
+
+  #hero p:last-of-type {
+    justify-content: flex-start;
+  }
+
+  .project-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
