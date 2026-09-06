@@ -60,6 +60,12 @@
 
     <section id="projects" aria-labelledby="projects-title">
       <h2 id="projects-title">Projects</h2>
+      <div id="project-filters" class="project-filters" role="tablist" aria-label="프로젝트 필터">
+        <button type="button" class="filter-button active" data-filter="All">All</button>
+        <button type="button" class="filter-button" data-filter="HTML">HTML</button>
+        <button type="button" class="filter-button" data-filter="CSS">CSS</button>
+        <button type="button" class="filter-button" data-filter="JavaScript">JavaScript</button>
+      </div>
       <div id="projects-status" class="projects-status" aria-live="polite"></div>
       <div id="project-list" class="project-list" aria-live="polite">
         <!-- 프로젝트 카드는 JS에서 동적으로 렌더링됩니다 -->

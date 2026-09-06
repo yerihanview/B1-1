@@ -138,6 +138,95 @@ initTheme();
 const projectsContainer = document.querySelector('#project-list');
 const projectsStatus = document.querySelector('#projects-status');
 
+// v0.8 — Filter 상태 및 원본 저장
+let originalRepos = [];
+let currentFilter = 'All';
+
+// Generate filter buttons from fetched repos (unique languages)
+const generateFiltersFromRepos = (repos) => {
+  const container = document.querySelector('#project-filters');
+  if (!container) return;
+
+  const languages = Array.from(
+    new Set(repos.map((r) => r.language).filter((l) => Boolean(l)))
+  ).sort();
+
+  const createButton = (filterName, isActive = false) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-button';
+    if (isActive) btn.classList.add('active');
+    btn.setAttribute('data-filter', filterName);
+    btn.setAttribute('aria-pressed', String(isActive));
+    btn.textContent = filterName;
+    return btn;
+  };
+
+  // Clear existing
+  container.innerHTML = '';
+
+  // All button first
+  container.appendChild(createButton('All', currentFilter === 'All'));
+
+  // Add language buttons
+  languages.forEach((lang) => {
+    container.appendChild(createButton(lang, currentFilter === lang));
+  });
+};
+
+const setupFilterUI = () => {
+  const filters = document.querySelector('#project-filters');
+  if (!filters) return;
+
+  filters.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-filter]');
+    if (!btn) return;
+    const selected = btn.getAttribute('data-filter');
+    if (!selected) return;
+    if (currentFilter === selected) return; // no-op
+
+    currentFilter = selected;
+    // update active class
+    filters.querySelectorAll('button[data-filter]').forEach((b) => {
+      b.classList.toggle('active', b.getAttribute('data-filter') === currentFilter);
+    });
+
+    applyCurrentFilter();
+  });
+};
+
+const updateFilterUI = () => {
+  const filters = document.querySelector('#project-filters');
+  if (!filters) return;
+  filters.querySelectorAll('button[data-filter]').forEach((b) => {
+    const isActive = b.getAttribute('data-filter') === currentFilter;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-pressed', String(isActive));
+  });
+};
+
+const applyCurrentFilter = () => {
+  if (!Array.isArray(originalRepos) || originalRepos.length === 0) {
+    renderEmpty();
+    return;
+  }
+
+  if (currentFilter === 'All') {
+    renderProjects(originalRepos);
+    return;
+  }
+
+  const filtered = originalRepos.filter((repo) => repo.language === currentFilter);
+
+  if (filtered.length === 0) {
+    setProjectsStatus('No projects match this filter.');
+    if (projectsContainer) projectsContainer.innerHTML = '';
+    return;
+  }
+
+  renderProjects(filtered);
+};
+
 // GitHub 사용자 이름을 설정하세요.
 // (예: const GITHUB_USERNAME = 'your-username')
 const GITHUB_USERNAME = 'yerihanview';
@@ -246,7 +335,12 @@ const fetchAndRenderProjects = async () => {
       html_url,
     }));
 
-    renderProjects(repos);
+    // 원본 데이터 저장하고 필터 UI를 동적으로 생성 후 기본 상태로 렌더
+    originalRepos = repos;
+    currentFilter = 'All';
+    generateFiltersFromRepos(originalRepos);
+    updateFilterUI();
+    renderProjects(originalRepos);
   } catch (err) {
     renderError(err.message || 'Network error');
   }
@@ -255,6 +349,9 @@ const fetchAndRenderProjects = async () => {
 // 페이지 로드 후 자동 호출
 document.addEventListener('DOMContentLoaded', () => {
   // Projects 섹션이 존재할 때만 호출
+  // Setup filter UI handlers regardless; they will no-op if element missing
+  setupFilterUI();
+
   if (document.querySelector('#projects')) {
     fetchAndRenderProjects();
   }
