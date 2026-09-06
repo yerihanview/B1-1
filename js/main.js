@@ -147,9 +147,18 @@ const generateFiltersFromRepos = (repos) => {
   const container = document.querySelector('#project-filters');
   if (!container) return;
 
-  const languages = Array.from(
-    new Set(repos.map((r) => r.language).filter((l) => Boolean(l)))
-  ).sort();
+  // Count languages (treat falsy language as 'Unknown') and sort by frequency
+  const counts = repos.reduce((acc, r) => {
+    const key = r.language || 'Unknown';
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const languages = Object.keys(counts).sort((a, b) => {
+    // primary: frequency desc, secondary: name asc
+    if (counts[b] !== counts[a]) return counts[b] - counts[a];
+    return a.localeCompare(b);
+  });
 
   const createButton = (filterName, isActive = false) => {
     const btn = document.createElement('button');
@@ -168,7 +177,7 @@ const generateFiltersFromRepos = (repos) => {
   // All button first
   container.appendChild(createButton('All', currentFilter === 'All'));
 
-  // Add language buttons
+  // Add language buttons in sorted order
   languages.forEach((lang) => {
     container.appendChild(createButton(lang, currentFilter === lang));
   });
@@ -273,7 +282,8 @@ const createProjectCard = (repo) => {
   desc.textContent = repo.description || '';
 
   const lang = document.createElement('p');
-  lang.textContent = repo.language ? `사용 언어: ${repo.language}` : '';
+  // Show 'Unknown' when language is missing
+  lang.textContent = `사용 언어: ${repo.language || 'Unknown'}`;
 
   const link = document.createElement('a');
   link.href = repo.html_url;
@@ -346,11 +356,43 @@ const fetchAndRenderProjects = async () => {
   }
 };
 
+// v0.9 — IntersectionObserver 기반 스크롤 진입 애니메이션 초기화
+const initIntersectionObserver = () => {
+  const revealElements = document.querySelectorAll('.reveal');
+  if (!revealElements || revealElements.length === 0) return;
+
+  // Feature detect
+  if (!('IntersectionObserver' in window)) {
+    console.warn('IntersectionObserver not supported — revealing all elements');
+    revealElements.forEach((el) => el.classList.add('visible'));
+    return;
+  }
+
+  const options = { threshold: 0.2 };
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      console.log('observer entry', entry.target.id || entry.target.className, entry.isIntersecting, entry.intersectionRatio);
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, options);
+
+  revealElements.forEach((el) => {
+    observer.observe(el);
+    console.log('observing', el.id || el.className);
+  });
+};
+
 // 페이지 로드 후 자동 호출
 document.addEventListener('DOMContentLoaded', () => {
-  // Projects 섹션이 존재할 때만 호출
   // Setup filter UI handlers regardless; they will no-op if element missing
   setupFilterUI();
+
+  // Initialize IntersectionObserver for reveal animations
+  initIntersectionObserver();
 
   if (document.querySelector('#projects')) {
     fetchAndRenderProjects();
