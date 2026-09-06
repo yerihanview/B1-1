@@ -8,9 +8,49 @@ const navToggle = document.querySelector('.nav-toggle');
 const mainNav = document.querySelector('.main-nav');
 const navLinks = document.querySelectorAll('.main-nav a');
 const siteHeader = document.querySelector('.site-header');
+const themeToggle = document.querySelector('.theme-toggle');
 const scrollToTopButton = document.createElement('button');
 
+// ============================================
+// v0.5 — Theme 상태 관리
+// ============================================
+// 페이지 시작 시 localStorage에서 저장된 theme 복원
+const initTheme = () => {
+  // localStorage에서 저장된 theme 읽음
+  const savedTheme = localStorage.getItem('theme');
+  
+  // 저장값이 있으면 사용, 없으면 'light'를 기본값으로 사용
+  const themeToApply = savedTheme || 'light';
+  
+  // 현재 theme 상태에 적용
+  currentTheme = themeToApply;
+  
+  // DOM의 data-theme 속성에 적용
+  document.documentElement.setAttribute('data-theme', currentTheme);
+};
+
+// 현재 theme를 HTML의 data-theme 속성에서 읽음
+// 초기값: 'light' (HTML에서 설정됨)
+let currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+// Theme 전환 함수
+const toggleTheme = () => {
+  // 현재 theme 확인 후 다음 theme 결정
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  
+  // DOM의 data-theme 속성 변경
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  
+  // localStorage에 theme 저장
+  localStorage.setItem('theme', currentTheme);
+};
+
+// Theme Toggle button에 event listener 추가
+themeToggle.addEventListener('click', toggleTheme);
+
+// ============================================
 // Scroll-to-Top 버튼 생성
+// ============================================
 scrollToTopButton.id = 'scroll-to-top-btn';
 scrollToTopButton.type = 'button';
 scrollToTopButton.textContent = '↑';
@@ -81,3 +121,8 @@ const scrollToTop = () => {
 };
 
 scrollToTopButton.addEventListener('click', scrollToTop);
+
+// ============================================
+// 페이지 시작 시 theme 초기화
+// ============================================
+initTheme();

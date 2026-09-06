@@ -17,6 +17,20 @@
   --spacing-xl: 2.5rem;
 }
 
+/* 다크 테마 변수 */
+[data-theme="dark"] {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
+  --color-muted: #94a3b8;
+  --color-primary: #3b82f6;
+  --color-primary-strong: #60a5fa;
+  --color-border: #334155;
+  --color-card: #1e293b;
+  --color-footer: #0f172a;
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
 /* 
 - '*' 선택자는 모든 요소를 선택하는 범용 선택자입니다.
 - box-sizing 속성을 border-box로 설정하면 요소의 너비와 높이에 패딩과 테두리(border)가 포함됩니다. 
