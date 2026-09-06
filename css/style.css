@@ -1,0 +1,338 @@
+/* 전체 문서의 최상위 요소를 가리키는 가상 클래스 선택자, 웹사이트 전체에 적용할 CSS 변수들 */
+:root {
+  --color-background: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-text: #1c2333;
+  --color-muted: #5d6779;
+  --color-primary: #3464e8;
+  --color-primary-strong: #264fb6;
+  --color-border: #dfe7f4;
+  --color-card: #ffffff;
+  --color-footer: #101828;
+  --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+  --radius: 16px;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+}
+
+/* 
+- '*' 선택자는 모든 요소를 선택하는 범용 선택자입니다.
+- box-sizing 속성을 border-box로 설정하면 요소의 너비와 높이에 패딩과 테두리(border)가 포함됩니다. 
+  즉, 요소의 실제 크기가 지정한 width와 height를 초과하지 않도록 합니다. 
+*/
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* var() 함수를 사용하여 :root에 선언한 CSS 변수 값을 적용 */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);  
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* a:는 링크 요소를 선택하는 선택자입니다.
+:hover는 마우스 커서가 링크 위에 있을 때 적용되는 상태를 나타내고,
+:focus-visible는 키보드로 포커스를 이동할 때 적용되는 상태를 나타낸다.
+*/
+a:hover,
+a:focus-visible {
+  color: var(--color-primary-strong);
+}
+
+header,
+main,
+footer {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+header {
+  padding: 1.25rem 1.5rem;
+}
+
+/*
+- display: flex;는 nav ul 요소를 flex 컨테이너로 만들어 자식 요소들을 flex 아이템으로 배치합니다.
+- justify-content: center;는 flex 컨테이너의 주 축(main axis) 방향으로 아이템들을 중앙에 배치합니다.
+- gap: 1.5rem;은 flex 아이템들 사이에 1.5rem의 간격을 설정합니다.
+- list-style: none;은 리스트 아이템의 기본 스타일(점, 숫자 등)을 제거합니다.
+- margin: 0;과 padding: 0;은 리스트의 기본 여백과 패딩을 제거합니다.
+*/
+nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+nav a:hover,
+nav a:focus-visible {
+  color: var(--color-primary);
+}
+
+main {
+  padding: 0 1.5rem 2rem;
+}
+
+section {
+  padding: 4rem 0;
+}
+
+#hero {
+  padding-top: 3rem;
+  padding-bottom: 3.5rem;
+}
+
+#hero p {
+  margin: 0 0 1rem;
+  color: var(--color-muted);
+}
+
+/*
+- clamp() 함수는 세 가지 값을 받아서, 첫 번째 값과 세 번째 값 사이에서 두 번째 값이 제한되도록 합니다.
+- font-size: clamp(2.5rem, 5vw, 4rem);
+  - 2.5rem: 최소 글꼴 크기
+  - 5vw: 뷰포트 너비의 5%를 기준으로 글꼴 크기를 조정
+  - 4rem: 최대 글꼴 크기
+*/
+#hero h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+/*
+- flex-wrap: wrap;은 flex 컨테이너의 아이템들이 한 줄에 다 들어가지 않을 경우, 다음 줄로 넘어가도록 설정합니다.
+- margin-top: 1.5rem;은 마지막 단락과 그 위의 요소 사이에 1.5rem의 여백을 추가합니다.
+*/
+
+#hero p:last-of-type {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+/*
+- display: inline-block;은 요소를 인라인 블록으로 만들어, 텍스트와 함께 한 줄에 배치되면서도 블록 요소처럼 너비와 높이를 가질 수 있게 합니다.
+- padding: 0.8rem 1.25rem;은 요소의 내부 여백을 상하 0.8rem, 좌우 1.25rem로 설정합니다.
+- border-radius: 999px;은 요소의 모서리를 둥글게 만들어 완전히 원형에 가깝게 만듭니다.
+- border: 1px solid var(--color-border);은 요소에 1px 두께의 실선 테두리를 적용하고, 테두리 색상은 CSS 변수(--color-border)를 사용합니다.
+- font-weight: 700;은 글꼴의 두께를 굵게 설정합니다.
+- transition 속성은 요소의 상태 변화(예: hover, focus) 시 애니메이션 효과를 적용합니다.
+- transform: translateY(-1px);은 요소를 Y축 방향으로 -1px 이동시켜 살짝 들어올리는 효과를 줍니다.
+- box-shadow: 0 8px 18px rgba(52, 100, 232, 0.12);은 요소에 그림자 효과를 추가하여 입체감을 줍니다.
+*/
+
+.cta-link {
+  display: inline-block;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.cta-link.primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.cta-link.primary:hover,
+.cta-link.primary:focus-visible {
+  background: var(--color-primary-strong);
+  color: #ffffff;
+}
+
+.cta-link.secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.cta-link:hover,
+.cta-link:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(52, 100, 232, 0.12);
+}
+
+h2,
+h3 {
+  margin-top: 0;
+  line-height: 1.3;
+}
+
+h2 {
+  margin-bottom: 1.25rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+}
+
+#about,
+#skills,
+#projects,
+#contact {
+  border-top: 1px solid var(--color-border);
+}
+
+#about {
+  display: grid;
+  gap: 1rem;
+}
+
+#about img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+/*
+- display: grid;은 요소를 그리드 컨테이너로 만들어 자식 요소들을 그리드 아이템으로 배치합니다.
+*/
+#skills ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.project-list {
+  display: block;
+}
+
+.project-card {
+  background: var(--color-card);
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.project-card p {
+  margin: 0 0 0.75rem;
+  color: var(--color-muted);
+}
+
+.project-card a {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+form {
+  max-width: 620px;
+  display: grid;
+  gap: 1rem;
+}
+
+form > div {
+  display: grid;
+  gap: 0.45rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid rgba(52, 100, 232, 0.18);
+  border-color: var(--color-primary);
+}
+
+textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/*
+- cursor: pointer;는 마우스 커서가 버튼 위에 있을 때 손가락 포인터 모양으로 변경되도록 합니다.
+*/
+button {
+  width: fit-content;
+  padding: 0.8rem 1.5rem;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover,
+button:focus-visible {
+  background: var(--color-primary-strong);
+  transform: translateY(-1px);
+}
+
+footer {
+  padding: 1.5rem 1.5rem 3rem;
+  color: #dfe7f4;
+  background: var(--color-footer);
+  border-radius: 24px 24px 0 0;
+  text-align: center;
+}
+
+footer p {
+  margin: 0.35rem 0;
+}
+
+footer a {
+  color: #ffffff;
+}
+
+footer a:hover,
+footer a:focus-visible {
+  color: #dfe7f4;
+}
