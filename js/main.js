@@ -126,3 +126,180 @@ scrollToTopButton.addEventListener('click', scrollToTop);
 // 페이지 시작 시 theme 초기화
 // ============================================
 initTheme();
+
+// ============================================
+// v0.6 — Contact Form 유효성 검사
+// ============================================
+const contactForm = document.querySelector('#contact-form');
+
+if (contactForm) {
+  const nameInput = document.querySelector('#name');
+  const emailInput = document.querySelector('#email');
+  const messageInput = document.querySelector('#message');
+  const formStatus = document.querySelector('#form-status');
+
+  /*
+   setFieldState 함수는 입력 필드의 유효성 검사 결과(성공/실패)를 UI에 반영
+   1. 입력창(input)과 가장 가까운 부모 폼 필드(.form-field) 및 에러 메시지 영역(.error-message)을 찾는다.
+   2. 유효하지 않다면(!isValid) 부모 필드에 is-invalid 클래스를 붙이고, 유효하다면 is-valid 클래스를 붙인다.
+   3. 스크린 리더 등 웹 접근성을 위해 aria-invalid 속성을 설정합니다.
+   4.실패 시 전달받은 message를 에러 메시지 영역에 텍스트로 표시합니다.
+  */
+  const setFieldState = (input, isValid, message = '') => {
+    const field = input.closest('.form-field');
+    const errorMessage = field?.querySelector('.error-message');
+
+    if (!field || !errorMessage) {
+      return;
+    }
+
+    field.classList.toggle('is-invalid', !isValid);
+    field.classList.toggle('is-valid', isValid && input.value.trim() !== '');
+    input.setAttribute('aria-invalid', String(!isValid));
+    errorMessage.textContent = message;
+  };
+
+  /*
+   resetFieldState 함수는 입력 필드의 상태를 초기화
+    1. 입력창(input)과 가장 가까운 부모 폼 필드(.form-field) 및 에러 메시지 영역(.error-message)을 찾는다.  
+    2. 부모 필드에서 is-invalid, is-valid 클래스를 제거하고, aria-invalid 속성을 false로 설정한다.
+    3. 에러 메시지 영역의 텍스트를 비운다.
+  */
+   const resetFieldState = (input) => {
+    const field = input.closest('.form-field');
+    const errorMessage = field?.querySelector('.error-message');
+
+    if (!field || !errorMessage) {
+      return;
+    }
+
+    field.classList.remove('is-invalid', 'is-valid');
+    input.setAttribute('aria-invalid', 'false');
+    errorMessage.textContent = '';
+  };
+
+  /*
+    validateName, validateEmail, validateMessage 함수는 각각 이름, 이메일, 메시지 입력 필드의 유효성을 검사
+    1. 입력값이 비어있으면 setFieldState를 호출하여 에러 메시지를 표시하고 false를 반환
+    2. 이메일의 경우 정규식을 사용하여 형식이 올바른지 확인
+    3. 유효하면 setFieldState를 호출하여 성공 상태를 표시하고 true를 반환
+  */
+  const validateName = (input) => {
+    const value = input.value.trim();
+
+    if (!value) {
+      setFieldState(input, false, '이름을 입력하세요.');
+      return false;
+    }
+
+    setFieldState(input, true);
+    return true;
+  };
+
+  const validateEmail = (input) => {
+    const value = input.value.trim();
+
+    if (!value) {
+      setFieldState(input, false, '이메일을 입력하세요.');
+      return false;
+    }
+
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+    if (!isEmailValid) {
+      setFieldState(input, false, '올바른 이메일 형식을 입력하세요.');
+      return false;
+    }
+
+    setFieldState(input, true);
+    return true;
+  };
+
+  const validateMessage = (input) => {
+    const value = input.value.trim();
+
+    if (!value) {
+      setFieldState(input, false, '메시지를 입력하세요.');
+      return false;
+    }
+
+    setFieldState(input, true);
+    return true;
+  };
+
+  /*
+    validateField 함수는 입력 필드에 따라 적절한 유효성 검사 함수를 호출
+    1. nameInput이면 validateName 호출
+    2. emailInput이면 validateEmail 호출
+    3. 그 외에는 validateMessage 호출
+  */
+  const validateField = (input) => {
+    if (input === nameInput) {
+      return validateName(input);
+    }
+
+    if (input === emailInput) {
+      return validateEmail(input);
+    }
+
+    return validateMessage(input);
+  };
+
+  /*
+    입력 필드에 이벤트 리스너를 추가하여 실시간 유효성 검사 및 상태 초기화
+    1. input 이벤트: 입력값이 변경될 때마다 validateField 호출
+    2. blur 이벤트: 입력 필드에서 포커스가 벗어날 때 validateField 호출
+    3. 입력값이 비어있고 is-invalid 클래스가 없는 경우 resetFieldState 호출
+  */
+  [nameInput, emailInput, messageInput].forEach((input) => {
+    input.addEventListener('input', () => {
+      const field = input.closest('.form-field');
+      const hasValue = input.value.trim() !== '';
+
+      if (hasValue || field?.classList.contains('is-invalid')) {
+        validateField(input);
+      } else {
+        resetFieldState(input);
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      validateField(input);
+    });
+  });
+
+  // ============================================
+  // 6. Contact Form 제출 이벤트 처리
+  // - preventDefault()를 사용하여 실제 제출을 막고, 유효성 검사를 수행한 후 상태 메시지를 표시합니다.
+  // ============================================
+    contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const isNameValid = validateName(nameInput);
+    const isEmailValid = validateEmail(emailInput);
+    const isMessageValid = validateMessage(messageInput);
+    const isFormValid = isNameValid && isEmailValid && isMessageValid;
+
+    if (formStatus) {
+      formStatus.textContent = '';
+      formStatus.classList.remove('is-success');
+    }
+
+    if (!isFormValid) {
+      const firstInvalidField = [nameInput, emailInput, messageInput].find(
+        (input) => input.getAttribute('aria-invalid') === 'true'
+      );
+
+      firstInvalidField?.focus();
+      return;
+    }
+
+    if (formStatus) {
+      formStatus.textContent = '성공적으로 제출되었습니다.';
+      formStatus.classList.add('is-success');
+    }
+
+    contactForm.reset();
+    [nameInput, emailInput, messageInput].forEach(resetFieldState);
+  });
+}
