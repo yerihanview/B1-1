@@ -15,38 +15,69 @@ const scrollToTopButton = document.createElement('button');
 // v0.5 — Theme 상태 관리
 // ============================================
 // 페이지 시작 시 localStorage에서 저장된 theme 복원
-const initTheme = () => {
-  // localStorage에서 저장된 theme 읽음
-  const savedTheme = localStorage.getItem('theme');
-  
-  // 저장값이 있으면 사용, 없으면 'light'를 기본값으로 사용
-  const themeToApply = savedTheme || 'light';
-  
-  // 현재 theme 상태에 적용
-  currentTheme = themeToApply;
-  
-  // DOM의 data-theme 속성에 적용
+const getSystemTheme = () => {
+  if (!window.matchMedia) {
+    return 'light';
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+const applyTheme = (theme, source = themeSource) => {
+  currentTheme = theme;
+  themeSource = source;
   document.documentElement.setAttribute('data-theme', currentTheme);
+};
+
+const initTheme = () => {
+  const savedTheme = localStorage.getItem('theme');
+
+  if (savedTheme) {
+    applyTheme(savedTheme, 'user');
+    return;
+  }
+
+  applyTheme(getSystemTheme(), 'system');
 };
 
 // 현재 theme를 HTML의 data-theme 속성에서 읽음
 // 초기값: 'light' (HTML에서 설정됨)
 let currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+let themeSource = localStorage.getItem('theme') ? 'user' : 'system';
+let systemThemeMediaQuery = null;
 
 // Theme 전환 함수
 const toggleTheme = () => {
-  // 현재 theme 확인 후 다음 theme 결정
-  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-  
-  // DOM의 data-theme 속성 변경
-  document.documentElement.setAttribute('data-theme', currentTheme);
-  
-  // localStorage에 theme 저장
+  const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+  applyTheme(nextTheme, 'user');
   localStorage.setItem('theme', currentTheme);
 };
 
 // Theme Toggle button에 event listener 추가
 themeToggle.addEventListener('click', toggleTheme);
+
+const initSystemThemeSync = () => {
+  if (!window.matchMedia) {
+    return;
+  }
+
+  systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const handleSystemThemeChange = (event) => {
+    if (themeSource === 'user') {
+      return;
+    }
+
+    applyTheme(event.matches ? 'dark' : 'light', 'system');
+  };
+
+  if (typeof systemThemeMediaQuery.addEventListener === 'function') {
+    systemThemeMediaQuery.addEventListener('change', handleSystemThemeChange);
+  } else if (typeof systemThemeMediaQuery.addListener === 'function') {
+    systemThemeMediaQuery.addListener(handleSystemThemeChange);
+  }
+};
 
 // ============================================
 // Scroll-to-Top 버튼 생성
@@ -130,6 +161,7 @@ scrollToTopButton.addEventListener('click', scrollToTop);
 // 페이지 시작 시 theme 초기화
 // ============================================
 initTheme();
+initSystemThemeSync();
 
 // ============================================
 // v0.7 — GitHub API를 이용한 Projects 동적 렌더링
