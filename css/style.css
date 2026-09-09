@@ -88,7 +88,8 @@ a:focus-visible {
 header,
 main,
 footer {
-  width: min(100%, 1100px);
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -98,6 +99,10 @@ footer {
   z-index: 100;
   padding: 1.25rem 1.5rem;
   background: var(--color-background);
+}
+
+.header-inner {
+  position: relative;
 }
 
 .header-inner {
@@ -182,9 +187,29 @@ footer {
     right: 0;
     background: var(--color-surface);
     border-top: 1px solid var(--color-border);
-    padding: 1.5rem 1.5rem;
+    padding: 1rem;
     box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
     z-index: 9999; /* ensure menu appears above other content */
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .site-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nav-toggle,
+  .theme-toggle {
+    flex: 0 0 auto;
+    max-width: 100%;
   }
 
   .main-nav.active ul {
@@ -236,7 +261,8 @@ Scroll-to-Top 버튼
 }
 
 main {
-  padding: 0 1.5rem 2rem;
+  padding: 0 1rem 2rem;
+  overflow-x: clip;
 }
 
 section {
@@ -278,6 +304,10 @@ section {
   flex-wrap: wrap;
   gap: 0.9rem;
   margin-top: 1.5rem;
+}
+
+#hero p:last-of-type .cta-link {
+  max-width: 100%;
 }
 
 .cta-link {
@@ -502,6 +532,7 @@ textarea {
 
 button {
   width: fit-content;
+  max-width: 100%;
   padding: 0.8rem 1.5rem;
   background: var(--color-primary);
   color: #ffffff;
@@ -550,6 +581,10 @@ footer a:focus-visible {
 - min-width: 768px는 화면의 최소 너비가 768픽셀 이상일 때 적용되는 스타일을 정의합니다. 
 */
 @media (min-width: 768px) {
+  .header-inner {
+    flex-wrap: nowrap;
+  }
+
   .main-nav {
     display: flex;
     position: static;
