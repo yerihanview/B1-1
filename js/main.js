@@ -412,6 +412,14 @@ if (contactForm) {
   const emailInput = document.querySelector('#email');
   const messageInput = document.querySelector('#message');
   const formStatus = document.querySelector('#form-status');
+  const submitButton = contactForm.querySelector('button[type="submit"]');
+
+  const setSubmitState = (isSubmitting) => {
+    if (submitButton) {
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? '전송 중...' : 'Submit';
+    }
+  };
 
   /*
    setFieldState 함수는 입력 필드의 유효성 검사 결과(성공/실패)를 UI에 반영
@@ -545,9 +553,10 @@ if (contactForm) {
 
   // ============================================
   // 6. Contact Form 제출 이벤트 처리
-  // - preventDefault()를 사용하여 실제 제출을 막고, 유효성 검사를 수행한 후 상태 메시지를 표시합니다.
+  // - preventDefault()를 사용하여 실제 제출을 막고, 유효성 검사를 수행한 후
+  //   실제 외부 서비스로 전송하는 흐름을 구현합니다.
   // ============================================
-    contactForm.addEventListener('submit', (event) => {
+  contactForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const isNameValid = validateName(nameInput);
@@ -557,7 +566,7 @@ if (contactForm) {
 
     if (formStatus) {
       formStatus.textContent = '';
-      formStatus.classList.remove('is-success');
+      formStatus.classList.remove('is-success', 'is-error');
     }
 
     if (!isFormValid) {
@@ -569,13 +578,44 @@ if (contactForm) {
       return;
     }
 
-    if (formStatus) {
-      formStatus.textContent = '성공적으로 제출되었습니다.';
-      formStatus.classList.add('is-success');
-    }
+    const formData = new FormData(contactForm);
+    const endpoint = 'https://formspree.io/f/maeyladk';
 
-    contactForm.reset();
-    [nameInput, emailInput, messageInput].forEach(resetFieldState);
+    try {
+      setSubmitState(true);
+
+      if (formStatus) {
+        formStatus.textContent = '전송 중...';
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Form submission failed: ${response.status}`);
+      }
+
+      if (formStatus) {
+        formStatus.textContent = '메시지가 성공적으로 전송되었습니다.';
+        formStatus.classList.add('is-success');
+      }
+
+      contactForm.reset();
+      [nameInput, emailInput, messageInput].forEach(resetFieldState);
+    } catch (error) {
+      if (formStatus) {
+        formStatus.textContent = '메시지 전송에 실패했습니다. 다시 시도해주세요.';
+        formStatus.classList.add('is-error');
+      }
+      console.error(error);
+    } finally {
+      setSubmitState(false);
+    }
   });
 }
 

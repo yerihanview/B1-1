@@ -162,7 +162,7 @@ footer {
 }
 
 .site-header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
   position: sticky;
   top: 0;
@@ -453,10 +453,19 @@ form {
   font-weight: 600;
 }
 
-.form-status.is-success {
+.form-status.is-success,
+.form-status.is-error {
   display: block;
+}
+
+.form-status.is-success {
   background-color: var(--color-success-bg);
   color: var(--color-success-text);
+}
+
+.form-status.is-error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
 }
 
 label {
@@ -506,6 +515,12 @@ button:hover,
 button:focus-visible {
   background: var(--color-primary-strong);
   transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
 }
 
 footer {
