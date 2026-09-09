@@ -93,7 +93,11 @@ footer {
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   padding: 1.25rem 1.5rem;
+  background: var(--color-background);
 }
 
 .header-inner {
@@ -164,9 +168,6 @@ footer {
 .site-header.scrolled {
   background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 /* ============================================
