@@ -120,6 +120,7 @@ footer {
   color: var(--color-text);
 }
 
+/* 모바일 환경에서는 기본적으로 숨긴다. */ 
 .main-nav {
   display: none;
 }
@@ -162,6 +163,7 @@ footer {
   font-weight: 600;
 }
 
+/* 모바일 환경에서 햄버거 버튼을 보여준다. */
 .nav-toggle {
   margin-left: auto;
 }
@@ -391,7 +393,7 @@ h3 {
   gap: 0.5rem;
 }
 
-.project-list {
+.projects-list {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -585,6 +587,7 @@ footer a:focus-visible {
     flex-wrap: nowrap;
   }
 
+  /* 항상 표시한다 */ 
   .main-nav {
     display: flex;
     position: static;
@@ -604,6 +607,7 @@ footer a:focus-visible {
     padding: 0;
   }
 
+  /* 햄버거 버튼을 감춘다.*/ 
   .nav-toggle {
     display: none;
   }
@@ -613,6 +617,7 @@ footer a:focus-visible {
     z-index: 10000;
   }
 
+  /* 햄버거 버튼 대신 Theme 버튼을 보여준다.*/
   .theme-toggle {
     display: inline-flex;
     align-items: center;
@@ -655,7 +660,7 @@ footer a:focus-visible {
     justify-content: flex-start;
   }
 
-  .project-list {
+  .projects-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
