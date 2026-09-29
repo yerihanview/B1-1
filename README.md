@@ -79,7 +79,7 @@ http://localhost:8000
 - Scroll-to-Top 표시 기준값: `300px`
 - IntersectionObserver threshold: `0.2`
 - GitHub API 사용자: `yerihanview`
-- Contact Form 전송 엔드포인트: `https://formspree.io/f/maeyladk`
+- Contact Form 전송 엔드포인트: [formspree.io](https://formspree.io/forms/maeyladk/submissions)
 
 
 ## 배포 URL
